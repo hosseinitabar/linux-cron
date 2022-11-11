@@ -1,0 +1,6 @@
+echo $"Bringing all sites up... $(date)" >> /Temp/UpAll
+/Company/ServerLinux/Commands/Up example1.com
+/Company/ServerLinux/Commands/Up example2.com
+/Company/ServerLinux/Commands/Up example3.com
+/Company/ServerLinux/Commands/Up example4.com
+echo $"Done $(date)" >> /Temp/UpAll
