@@ -1,0 +1,29 @@
+. Load
+
+TargetDomain=$1
+
+if [[ $TargetDomain == "" ]]; then 
+
+    Error 'Domain is not provided';
+    exit;
+fi
+
+if [[ ! `test -f /etc/nginx/conf.d/$TargetDomain.conf && echo exists` ]] ; then
+    Error "$TargetDomain is not hosted on server"
+    exit
+fi
+
+export ServerPath=$(find /PaydarNode -type f -name $TargetDomain.telemetry | xargs cat | grep ServerPath: | cut -d ' ' -f2)
+if [[ $ServerPath == "" ]]; then 
+    Error "cannot find $TargetDomain.telemetry"
+    exit
+fi
+
+export ProjectPath=$(find /PaydarNode -type f -name $TargetDomain.telemetry | xargs cat | grep ProjectPath: | cut -d ' ' -f2)
+export Domain=$(find /PaydarNode -type f -name $TargetDomain.telemetry | xargs cat | grep Domain: | cut -d ' ' -f2)
+export Port=$(find /PaydarNode -type f -name $TargetDomain.telemetry | xargs cat | grep Port: | cut -d ' ' -f2)
+
+Success "ServerPath: $ServerPath"
+Success "ProjectPath: $ProjectPath"
+Success "Domain: $Domain"
+Success "Port: $Port"

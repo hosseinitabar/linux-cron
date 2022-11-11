@@ -1,0 +1,22 @@
+. Load
+
+TargetDomain=$1
+
+if [[ $TargetDomain == "" ]]; then 
+    Error 'Domain is not provided';
+    exit;
+fi
+
+Divide
+Info Killing "$TargetDomain"
+Divide
+
+export Port=$(Port $TargetDomain)
+Info Port "$Port"
+Divide
+
+kill -9 $(lsof -t -i:$Port)
+
+Divide
+Warning "$TargetDomain process killed"
+Divide

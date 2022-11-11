@@ -1,0 +1,51 @@
+echo 'Up using echo'
+echo 'Up using echo' >> /Temp/UpLog
+
+. Load
+
+TargetDomain=$1
+
+if [[ $TargetDomain == "" ]]; then 
+    
+    Extract
+
+    if [[ $Organization == "" ]] || [[ $Project == "" ]]; then 
+        Error 'Change working directory or input a domain';
+        Error 'Change working directory or input a domain' >> /Temp/UpLog
+        exit;
+    fi
+
+    if [ -f $ProjectPath/*.conf ]; then
+        TargetDomain=$(find $ProjectPath -type f -name "*.conf" | sed "s/\/$Organization\/$Repository\/$Project\///" | sed "s/\.conf//")
+    else
+        Error 'Domain is not provided';
+        Error 'Domain is not provided' >> /Temp/UpLog
+        exit;
+    fi
+fi
+
+if [[ ! `test -f /etc/nginx/conf.d/$TargetDomain.conf && echo exists` ]] ; then
+    Error "$TargetDomain is not hosted on server"
+    Error "$TargetDomain is not hosted on server" >> /Temp/UpLog
+    exit
+fi
+
+
+ServerPath=$(find /PaydarNode -type f -name $TargetDomain.telemetry | xargs cat | grep ServerPath: | cut -d ' ' -f2)
+if [[ $ServerPath == "" ]]; then 
+    Error "cannot find $TargetDomain.telemetry"
+    Error "cannot find $TargetDomain.telemetry" >> /Temp/UpLog
+    exit
+fi
+
+CurrentPort=$(Port $TargetDomain)
+ProcessId=$(lsof -t -i:$CurrentPort)
+
+if [[ $ProcessId == "" ]]; then
+    Error $TargetDomain Is Stopped
+    Error $TargetDomain Is Stopped >> /Temp/UpLog
+    Run $TargetDomain
+else
+    Success $TargetDomain Is Up and Running
+    Success $TargetDomain Is Up and Running >> /Temp/UpLog
+fi

@@ -1,0 +1,4 @@
+for ScriptFile in /PaydarCore/ServerLinux/Scripts/**;
+do
+    . "$ScriptFile"
+done

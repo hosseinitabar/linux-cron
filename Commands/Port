@@ -1,0 +1,13 @@
+Domain=$1
+
+if [[ $Domain == "" ]]; then
+    echo 'Please provide a domain';
+    exit;
+fi
+
+if [ ! -f /etc/nginx/conf.d/$Domain.conf ]; then
+    echo 'nginx config not found for $Domain';
+    exit;
+fi
+
+echo $(cat /etc/nginx/conf.d/$Domain.conf | grep "localhost:" | tr -dc '0-9')

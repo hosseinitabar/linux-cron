@@ -1,0 +1,4 @@
+ServerPath: $ServerPath
+ProjectPath: $ProjectPath
+Domain: $TargetDomain
+Port: $ServerPort

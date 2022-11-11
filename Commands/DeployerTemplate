@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# . Load
+
+cd $ServerPath
+
+echo Killing
+kill -9 $(lsof -t -i:$ServerPort)
+sleep 2
+echo Killed
+
+echo Removing old files...
+rm -rf next.config.js next.js package.json .next public node_modules
+sleep 2
+echo Old files removed
+
+echo Extracting...
+unzip -qo publish.zip
+sleep 5
+echo Extracted
+
+echo Linking node_modules
+ln -s -f /PaydarCore/Next/node_modules $ServerPath
+sleep 2
+echo node_modules linked
+
+echo Linking fonts
+ln -s -f /PaydarCore/Next/Fonts $ServerPath/public
+sleep 2
+echo fonts linked
+
+echo Running...
+nohup npx next start -p $ServerPort &
+
+echo Ready now

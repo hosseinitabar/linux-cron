@@ -1,0 +1,16 @@
+function Extract()
+{
+    export Organization=$(echo $PWD | cut -d'/' -f2)
+    if [[ $Organization != PaydarNode ]]; then
+        export Organization="";
+        Error "Not a PaydarNode directory"
+        return;
+    fi
+    export Repository=$(echo $PWD | cut -d'/' -f3)
+    export Project=$(echo $PWD | cut -d'/' -f4)
+    export ProjectPath=$PWD
+    Success "Organization: $Organization"
+    Success "Repository: $Repository"
+    Success "Project: $Project"
+    Divide
+}

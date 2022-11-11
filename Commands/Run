@@ -1,0 +1,41 @@
+. Load
+
+TargetDomain=$1
+
+if [[ $TargetDomain == "" ]]; then 
+    
+    Extract
+
+    if [[ $Organization == "" ]] || [[ $Project == "" ]]; then 
+        Error 'Change working directory or input a domain';
+        exit;
+    fi
+
+    if [ -f $ProjectPath/*.conf ]; then
+        TargetDomain=$(find $ProjectPath -type f -name "*.conf" | sed "s/\/$Organization\/$Repository\/$Project\///" | sed "s/\.conf//")
+    else
+        Error 'Domain is not provided';
+        exit;
+    fi
+fi
+
+if [[ ! `test -f /etc/nginx/conf.d/$TargetDomain.conf && echo exists` ]] ; then
+    Error "$TargetDomain is not hosted on server"
+    exit
+fi
+
+
+ServerPath=$(find /PaydarNode -type f -name $TargetDomain.telemetry | xargs cat | grep ServerPath: | cut -d ' ' -f2)
+if [[ $ServerPath == "" ]]; then 
+    Error "cannot find $TargetDomain.telemetry"
+    exit
+fi
+
+Kill $TargetDomain
+
+Info Running "$Repository/$Project on $TargetDomain"
+export Port=$(Port $TargetDomain)
+Info ServerPath $ServerPath
+Info Port $Port
+cd $ServerPath
+nohup npx next start -p $Port &
